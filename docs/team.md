@@ -12,5 +12,5 @@ title:  Team
 ## Nathan Loo
 ***UCI Net ID***: loon1
 
-## USER 3
-***UCI Net ID***: ucinetid3
+## Cindy Liang
+***UCI Net ID***: liangc30
