@@ -28,8 +28,4 @@ In terms of comparing our outputs, we could find many different variations of a 
 
 ## AI Tool Usage
 
-Potential algorithm ideas were provided by ChatGPT, and we picked a few to research in order to decide if they were viable or not, including the Group Sequence Policy Optimization (GSPO) and Group Relative Policy Optimization (GRPO) algorithms.
-
-## AI Tool Usage
-
-ChatGPT was used for potential gameplay modification aspects to add to the Snake game, such as being able to teleport through walls. Potential algorithm ideas were also provided by ChatGPT, in which we researched some of these algorithm ideas through articles in order to decide if these algorithms were viable or not.
+Potential algorithm ideas were provided by ChatGPT, and we picked a few to research in order to decide if they were viable or not, including the Group Sequence Policy Optimization (GSPO) and Group Relative Policy Optimization (GRPO) algorithms. We also used ChatGPT for potential gameplay modification ideas to the original Snake game.
