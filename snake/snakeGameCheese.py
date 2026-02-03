@@ -7,7 +7,7 @@ import random
 import time
 
 class snakeGame():
-    def __init__(self):
+    def __init__(self, fruit_position = np.array([500, 500], dtype=np.int32), snake_position = np.array([350, 250], dtype=np.int32)):
         self.DEBUG = True
         self.log = "log.txt"
         # clear log file so we only have current run
