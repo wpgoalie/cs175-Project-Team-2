@@ -10,3 +10,6 @@ __pycache__/
 slurm-*.out
 slurm-*.err
 *.slurm
+
+# Media Files
+snake-agent/

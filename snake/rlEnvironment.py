@@ -2,16 +2,20 @@ import gymnasium as gym
 from snakeGameCheese import snakeGameCheese
 from typing import Optional
 import numpy as np
+import pygame
 
 # NOTE FOR FUTURE: gymnasium prefers float32?
 
 class snakeRLEnvironment(gym.Env):
-    def __init__(self, length_of_grid_x = 30, length_of_grid_y = 24):
+    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
+    def __init__(self, length_of_grid_x = 30, length_of_grid_y = 24, render_mode = None):
         self.length_of_grid_x = length_of_grid_x
         self.length_of_grid_y = length_of_grid_y
 
         self.metadata = {"render_modes": []}
-        self.render_mode = None
+        self.render_mode = render_mode
+        self.window = None
+        self.clock = None
     
         self.game = snakeGameCheese(
             grid_size=np.array([self.length_of_grid_x, self.length_of_grid_y]),
@@ -154,3 +158,103 @@ class snakeRLEnvironment(gym.Env):
         info = self._get_info()
 
         return observation, reward, terminated, truncated, info
+
+    def render(self):
+        if self.render_mode == "rgb_array":
+            return self._render_frame()
+
+    def _render_frame(self):
+        # if self.window is None and self.render_mode == "human":
+        #     pygame.init()
+        #     pygame.display.init()
+            
+        #     self.window = pygame.display.set_mode(
+        #         (self.window_size, self.window_size)
+        #     )
+        
+        # if self.clock is None and self.render_mode == "human":
+        #     self.clock = pygame.time.Clock()
+
+        # snakeCanvas = pygame.Surface((self.game.size_x, self.game.size_y))
+        # snakeCanvas.fill((255, 255, 255))
+        # pix_square_size = self.game.cell_size
+
+        # # Draws the apple
+        # pygame.draw.rect(
+        #     snakeCanvas,
+        #     (255, 0, 0),
+        #     pygame.Rect(
+        #         pix_square_size * self._target_location[::-1],
+        #         (pix_square_size, pix_square_size),
+        #     ),
+        # )
+
+        # # Draws the snake head only (we might need to store the entire snake body in the agent location?)
+        # pygame.draw.circle(
+        #     snakeCanvas,
+        #     (0, 0, 255),
+        #     (self._agent_location[::-1] + 0.5) * pix_square_size,
+        #     pix_square_size / 3,
+        # )
+
+        # if self.render_mode == "human":
+        #     # The following line copies our drawings from `canvas` to the visible window
+        #     self.window.blit(snakeCanvas, snakeCanvas.get_rect())
+        #     pygame.event.pump()
+        #     pygame.display.update()
+
+        #     # We need to ensure that human-rendering occurs at the predefined framerate.
+        #     # The following line will automatically add a delay to keep the framerate stable.
+        #     self.clock.tick(self.metadata["render_fps"])
+        # else:  # rgb_array
+        #     return np.transpose(
+        #         np.array(pygame.surfarray.pixels3d(snakeCanvas)), axes=(1, 0, 2)
+        #     )
+        # pygame.init()
+        # pygame.display.set_caption('Snake Game with Cheese Variation')
+        # self.game.game_screen = pygame.display.set_mode((self.game.size_x, self.game.size_y))
+
+        # self.game.game_screen.fill('green')
+        # # draw head regardless of its assigned visibility
+        # head = self.game.snake_body[0]
+        # pygame.draw.rect(self.game.game_screen, 'cyan', pygame.Rect(head[0], head[1], self.game.cell_size, self.game.cell_size))
+        # # draw body parts alternating by body key
+        # for pos in self.game.snake_body[1:]:
+        #     if pos[2] == self.game.active_body_key: # actual body, not skipped part
+        #         pygame.draw.rect(self.game.game_screen, 'blue',
+        #                         pygame.Rect(pos[0], pos[1], self.game.cell_size, self.game.cell_size))
+        
+        # pygame.draw.rect(self.game.game_screen, 'red', pygame.Rect(
+        #     self.game.fruit_position[0], self.game.fruit_position[1], self.game.cell_size, self.game.cell_size))
+
+        # self.game.score_display('white', 'times new roman', 30)
+        if self.window is None:
+            self.game.fps = pygame.time.Clock()
+            pygame.init()
+            pygame.display.set_caption('Snake Game with Cheese Variation')
+            self.window = pygame.display.set_mode((self.game.size_x, self.game.size_y))
+
+        self.window.fill('green')
+        # draw head regardless of its assigned visibility
+        head = self.game.snake_body[0]
+        pygame.draw.rect(self.window, 'cyan', pygame.Rect(head[0], head[1], self.game.cell_size, self.game.cell_size))
+        # draw body parts alternating by body key
+        for pos in self.game.snake_body[1:]:
+            if pos[2] == self.game.active_body_key: # actual body, not skipped part
+                pygame.draw.rect(self.window, 'blue',
+                                pygame.Rect(pos[0], pos[1], self.game.cell_size, self.game.cell_size))
+        
+        pygame.draw.rect(self.window, 'red', pygame.Rect(
+            self.game.fruit_position[0], self.game.fruit_position[1], self.game.cell_size, self.game.cell_size))
+
+        # displaying score continuously
+        # self.game.score_display('white', 'times new roman', 30)
+    
+        # Refresh game screen
+        pygame.display.update()
+        
+
+        return np.transpose(np.array(pygame.surfarray.pixels3d(self.window)), axes=(1, 0, 2))
+
+    
+
