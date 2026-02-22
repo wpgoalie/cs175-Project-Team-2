@@ -75,7 +75,33 @@ class snakeRLEnvironment(gym.Env):
                 self._agent_location - self._target_location, ord=1
             )
         }
+    def _get_dangers(self):
+        # should detect if next move results in collision with itself or a wall, returns dictionary of where dangers are based on direction
+        head_x, head_y, = self.game.snake_position
+        step = step.game.cell_size
 
+        potential_positions = {"UP": (head_x, head_y - step), 
+                               "DOWN": (head_x, head_y + step), 
+                               "LEFT": (head_x - step, head_y), 
+                               "RIGHT": (head_x + step, head_y),}
+        dangers = {}
+
+        for direction, (nx, ny) in positions.items():
+            danger = 0;
+            # boundary/wall check
+            if nx < 0 or nx >= self.game.size_x or ny < 0 or ny >= self.game.size_y:
+                danger = 1
+
+            for segment in self.game.self.snake_body[1:]:
+                if segment[2] == self.game.active_body_key:
+                    if nx == segment[0] and ny == segment[1]:
+                        danger = 1
+                        break
+                        
+            dangers[direction] = danger
+
+        return dangers
+        
     def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
         """Start a new episode.
 
