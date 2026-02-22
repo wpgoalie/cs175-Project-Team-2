@@ -42,6 +42,12 @@ class snakeRLEnvironment(gym.Env):
                     high=np.array([self.length_of_grid_x - 1, self.length_of_grid_y - 1]),
                     dtype=np.int32
                 ),
+                "danger": gym.spaces.Box(
+                    low = 0,
+                    high = 1,
+                    shape=(3,),
+                    dtype=np.int32
+                ),
             }
         )
     
