@@ -43,6 +43,12 @@ class snakeRLEnvironment(gym.Env):
                     high=np.array([self.length_of_grid_x - 1, self.length_of_grid_y - 1]),
                     dtype=np.int32
                 ),
+                "danger": gym.spaces.Box(
+                    low = 0,
+                    high = 1,
+                    shape=(3,),
+                    dtype=np.int32
+                ),
             }
         )
     
@@ -63,7 +69,15 @@ class snakeRLEnvironment(gym.Env):
         Returns:
             dict: Observation with agent and target positions
         """
-        return {"agent": self._agent_location, "target": self._target_location}
+        dangers = self._get_dangers()
+        danger_arr = np.array([
+            dangers["UP"],
+            dangers["DOWN"],
+            dangers["LEFT"],
+            dangers["RIGHT"]
+        ], dtype=np.int32)
+        
+        return {"agent": self._agent_location, "target": self._target_location, "danger": danger_arr}
 
     def _get_info(self):
         """Compute auxiliary information for debugging.
@@ -76,7 +90,33 @@ class snakeRLEnvironment(gym.Env):
                 self._agent_location - self._target_location, ord=1
             )
         }
+    def _get_dangers(self):
+        # should detect if next move results in collision with itself or a wall, returns dictionary of where dangers are based on direction
+        head_x, head_y = self.game.snake_position
+        step = self.game.cell_size
 
+        potential_positions = {"UP": (head_x, head_y - step), 
+                               "DOWN": (head_x, head_y + step), 
+                               "LEFT": (head_x - step, head_y), 
+                               "RIGHT": (head_x + step, head_y),}
+        dangers = {}
+
+        for direction, (nx, ny) in potential_positions.items():
+            danger = 0
+            # boundary/wall check
+            if nx < 0 or nx >= self.game.size_x or ny < 0 or ny >= self.game.size_y:
+                danger = 1
+            # body collision check
+            for segment in self.game.snake_body[1:]:
+                if segment[2] == self.game.active_body_key:
+                    if nx == segment[0] and ny == segment[1]:
+                        danger = 1
+                        break
+                        
+            dangers[direction] = danger
+
+        return dangers
+        
     def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
         """Start a new episode.
 
