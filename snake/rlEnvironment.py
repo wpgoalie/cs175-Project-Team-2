@@ -3,6 +3,7 @@ from snakeGameCheese import snakeGameCheese
 from typing import Optional
 import numpy as np
 import pygame
+import math
 
 # NOTE FOR FUTURE: gymnasium prefers float32?
 
@@ -133,6 +134,7 @@ class snakeRLEnvironment(gym.Env):
         # Map the discrete action (0-2) to a movement direction
         direction = self._action_to_direction[action]
         prev_score = self.game.score
+        prev_distance = math.sqrt((self.game.fruit_position[0] - self.game.snake_position[0]) ** 2 + (self.game.fruit_position[1] - self.game.snake_position[1]) ** 2)
         
         self.game.step_function(direction)
 
@@ -147,12 +149,18 @@ class snakeRLEnvironment(gym.Env):
         # (could add a step limit here if desired)
         truncated = False
 
+        current_distance = math.sqrt((self.game.fruit_position[0] - self.game.snake_position[0]) ** 2 + (self.game.fruit_position[1] - self.game.snake_position[1]) ** 2)
+
         # Simple reward structure: +1 for reaching target, 0 otherwise
         # Alternative: could give small negative rewards for each step to encourage efficiency (NOTE FOR FUTURE: negative reward if dies?)
         if self.game.score > prev_score:
             reward = 1
         else: 
-            reward = 0
+            if terminated:
+                reward = -1
+            else:
+                reward = abs(prev_distance - current_distance) * -0.1
+                reward = reward - 0.01
 
         observation = self._get_obs()
         info = self._get_info()

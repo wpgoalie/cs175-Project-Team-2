@@ -7,4 +7,5 @@
 #SBATCH --mem=20GB            ## Allocated Memory
 #SBATCH --cpus-per-task 8     ## Number of CPU cores
 
+rm -r snake-agent
 python snakeAgent.py

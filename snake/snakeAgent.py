@@ -20,7 +20,7 @@ def main():
     )
     
     model = PPO("MultiInputPolicy", env, verbose=1)
-    model.learn(total_timesteps=25_000)
+    model.learn(total_timesteps=50_000)
     model.save(Path.home() / "ppo_snake")
     env.close()
 
