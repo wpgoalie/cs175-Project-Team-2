@@ -68,7 +68,15 @@ class snakeRLEnvironment(gym.Env):
         Returns:
             dict: Observation with agent and target positions
         """
-        return {"agent": self._agent_location, "target": self._target_location}
+        dangers = self._get_dangers()
+        danger_arr = np.array([
+            dangers["UP"],
+            dangers["DOWN"],
+            dangers["LEFT"],
+            dangers["RIGHT"]
+        ], dtype=np.int32)
+        
+        return {"agent": self._agent_location, "target": self._target_location, "danger": danger_arr}
 
     def _get_info(self):
         """Compute auxiliary information for debugging.
@@ -83,8 +91,8 @@ class snakeRLEnvironment(gym.Env):
         }
     def _get_dangers(self):
         # should detect if next move results in collision with itself or a wall, returns dictionary of where dangers are based on direction
-        head_x, head_y, = self.game.snake_position
-        step = step.game.cell_size
+        head_x, head_y = self.game.snake_position
+        step = self.game.cell_size
 
         potential_positions = {"UP": (head_x, head_y - step), 
                                "DOWN": (head_x, head_y + step), 
@@ -92,13 +100,13 @@ class snakeRLEnvironment(gym.Env):
                                "RIGHT": (head_x + step, head_y),}
         dangers = {}
 
-        for direction, (nx, ny) in positions.items():
-            danger = 0;
+        for direction, (nx, ny) in potential_positions.items():
+            danger = 0
             # boundary/wall check
             if nx < 0 or nx >= self.game.size_x or ny < 0 or ny >= self.game.size_y:
                 danger = 1
-
-            for segment in self.game.self.snake_body[1:]:
+            # body collision check
+            for segment in self.game.snake_body[1:]:
                 if segment[2] == self.game.active_body_key:
                     if nx == segment[0] and ny == segment[1]:
                         danger = 1
