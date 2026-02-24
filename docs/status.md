@@ -16,7 +16,10 @@ This is a test message.
 
 ## Remaining Goals and Challenges
 
-This is a test message.
+Our goals for the rest of the quarter are still in line with the goals we set at the beginning of this project. As a baseline goal, we wanted our agent to achieve a score that is considered above average for an average human player, which was 43-46 on a 9x10 board, 125-128 on a 15x17 board, and 250-253 on a 23x24 board. We believe that our baseline and realistic goals are still relevant and still within reach of completion. 
+Right now, our model isn't currently hitting our baseline goal, but the changes we have made to the parameters, environment, and reward system have contributed to a rapidly increasing score. Some examples of the some changes we made were a basic reward system with a postiive and negative point system based on whether our snake find an apple versus hitting itself or the board boundary. We also provided more parameters, particularly a basic danger detection function, that will inform the agent where dangers of termination are in its next move, and more information about where the snake's body is on the board as opposed to having information on just eh snake's head and the fruit currently on the board.
+Right now we do think that our current implementation is on track and think that more evaluation is needed to gain better results.
+Given what we experienced so far, some challenges we are anticipating is adding more to our implementation. We already have plans to make the reward system more precise by adding more minor reward updates to tiles based on pathing and location relative to fruits. We also plan emphasize the negative rewards on termination conditions (the snake hitting itself or the wall) so that in future trainings, the agent will make decisions taking longer paths to avoid all negative terminations and eventaully find more fruits instead of just hitting itself. We think that these changes will signifiicantly improve our agent's performance and we believe that there is a decent amount of time to meet our goals.
 
 ## Resources Used
 
