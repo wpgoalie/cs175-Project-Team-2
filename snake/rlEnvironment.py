@@ -174,7 +174,13 @@ class snakeRLEnvironment(gym.Env):
         # Map the discrete action (0-2) to a movement direction
         direction = self._action_to_direction[action]
         prev_score = self.game.score
-        prev_distance = math.sqrt((self.game.fruit_position[0] - self.game.snake_position[0]) ** 2 + (self.game.fruit_position[1] - self.game.snake_position[1]) ** 2)
+        prev_distance = 0
+        try:
+            x_calc = float(self.game.fruit_position[0]) - float(self.game.snake_position[0])
+            y_calc = float(self.game.fruit_position[1]) - float(self.game.snake_position[1])
+            prev_distance = math.sqrt((x_calc) ** 2 + (y_calc) ** 2)
+        except ValueError:
+            prev_distance = 0
         
         self.game.step_function(direction)
 
@@ -189,7 +195,13 @@ class snakeRLEnvironment(gym.Env):
         # (could add a step limit here if desired)
         truncated = False
 
-        current_distance = math.sqrt((self.game.fruit_position[0] - self.game.snake_position[0]) ** 2 + (self.game.fruit_position[1] - self.game.snake_position[1]) ** 2)
+        current_distance = 0
+        try:
+            x_calc = float(self.game.fruit_position[0]) - float(self.game.snake_position[0])
+            y_calc = float(self.game.fruit_position[1]) - float(self.game.snake_position[1])
+            current_distance = math.sqrt((x_calc) ** 2 + (y_calc) ** 2)
+        except ValueError:
+            current_distance = 0
 
         reward = 0
 
