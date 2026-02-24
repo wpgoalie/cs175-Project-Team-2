@@ -15,6 +15,9 @@ title:  Team
 
 ## Nathan Loo
 ***UCI Net ID***: loon1
+[GitHub](https://github.com/nathanloo87)  
+[LinkedIn](https://www.linkedin.com/in/nathan-loo-499b1332b/)  
+
 
 ## Cindy Liang
 ***UCI Net ID***: liangc30  
