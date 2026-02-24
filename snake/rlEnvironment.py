@@ -46,7 +46,7 @@ class snakeRLEnvironment(gym.Env):
                 "danger": gym.spaces.Box(
                     low = 0,
                     high = 1,
-                    shape=(3,),
+                    shape=(4,),
                     dtype=np.int32
                 ),
             }
@@ -191,6 +191,8 @@ class snakeRLEnvironment(gym.Env):
 
         current_distance = math.sqrt((self.game.fruit_position[0] - self.game.snake_position[0]) ** 2 + (self.game.fruit_position[1] - self.game.snake_position[1]) ** 2)
 
+        reward = 0
+
         # Simple reward structure: +1 for reaching target, 0 otherwise
         # Alternative: could give small negative rewards for each step to encourage efficiency (NOTE FOR FUTURE: negative reward if dies?)
         if self.game.score > prev_score:
@@ -199,7 +201,13 @@ class snakeRLEnvironment(gym.Env):
             if terminated:
                 reward = -1
             else:
-                reward = abs(prev_distance - current_distance) * -0.1
+                distance_diff = prev_distance - current_distance
+
+                if distance_diff > 0:
+                    reward = reward + 0.1
+                else:
+                    reward = reward - 0.1
+
                 reward = reward - 0.01
 
         observation = self._get_obs()
@@ -296,7 +304,13 @@ class snakeRLEnvironment(gym.Env):
             self.game.fruit_position[0], self.game.fruit_position[1], self.game.cell_size, self.game.cell_size))
 
         # displaying score continuously
-        # self.game.score_display('white', 'times new roman', 30)
+        color = 'white'
+        font = 'times new roman'
+        size = 30
+        score_font = pygame.font.SysFont(font, size)
+        score_surface = score_font.render('Score : ' + str(self.game.score), True, color)
+        score_rect = score_surface.get_rect()
+        self.window.blit(score_surface, score_rect)
     
         # Refresh game screen
         pygame.display.update()
