@@ -4,8 +4,8 @@ from stable_baselines3 import PPO
 from rlEnvironment import snakeRLEnvironment
 
 def main():
-    env = snakeRLEnvironment(render_mode = "human")
-    model = PPO.load('ppo_snake.zip')
+    env = snakeRLEnvironment(render_mode = "rgb_array")
+    model = PPO.load('ppo_snake')
 
     obs, info = env.reset()
 
