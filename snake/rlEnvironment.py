@@ -227,6 +227,9 @@ class snakeRLEnvironment(gym.Env):
 
         return observation, reward, terminated, truncated, info
 
+    def score(self):
+        return self.game.score
+
     def render(self):
         if self.render_mode == "rgb_array":
             return self._render_frame()
