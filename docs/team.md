@@ -18,3 +18,5 @@ title:  Team
 
 ## Cindy Liang
 ***UCI Net ID***: liangc30
+[GitHub](https://github.com/CLiang531/)  
+[LinkedIn](https://www.linkedin.com/in/cliang2027/)
