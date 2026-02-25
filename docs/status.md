@@ -148,7 +148,7 @@ In addition to these quantitative statistics, we also reviewed various clips thr
 
 <img height="300" alt="image" src="https://github.com/user-attachments/assets/d251ff2f-b055-4220-b645-305fd3776365" />
 
-However, we also can observe from the qualitative videos positive attributes such as utilizing the gaps in between its body to escape from difficult positions or to get to the fruit through a slightly shorter path, which indicates that the agent is utilizing the cheese variation properites to aid its progress.
+However, we also can observe from the qualitative videos positive attributes such as utilizing the gaps in between its body to escape from difficult positions or to get to the fruit through a slightly shorter path, which indicates that the agent is taking advantage of the cheese variation properites to aid its progress.
 
 <img height="300" alt="image" src="https://github.com/user-attachments/assets/b3e654bb-f246-4ea2-a8de-5f8e9ee5a23f" />
 
