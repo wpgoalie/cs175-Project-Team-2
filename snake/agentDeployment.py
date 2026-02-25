@@ -5,28 +5,30 @@ from rlEnvironment import snakeRLEnvironment
 
 def main():
     env = snakeRLEnvironment(render_mode = "rgb_array")
-    model = PPO.load('ppo_snake')
+    model = PPO.load('data/models/ppo_snake')
 
     obs, info = env.reset()
 
     n_eval_episodes = 50 
     all_rewards = []
     all_lengths = []
+    all_scores = []
 
     for ep in range(n_eval_episodes):
         obs, info = env.reset()
         done = False
         ep_reward = 0
         ep_length = 0
-
+        
         while not done:
             action, _states = model.predict(obs, deterministic=True)
-            obs, reward, terminated, truncated, info = env.step(action.item())
+            obs, reward, score, terminated, truncated, info = env.step(action.item())
             done = terminated or truncated
             ep_reward += reward
             ep_length += 1
             env.render() 
 
+        all_scores.append(env.score())
         all_rewards.append(ep_reward)
         all_lengths.append(ep_length)
 

@@ -13,3 +13,6 @@ slurm-*.err
 
 # Media Files
 snake-agent/
+
+data/videos/*
+!data/videos/.gitkeep
