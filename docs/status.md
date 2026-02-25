@@ -25,7 +25,7 @@ For the environment setup, we adapted a classic snake game pygame provided by [g
 - "target": current position of the fruit
 - "danger": indicates whether moving in each cardinal direction (up, down, left, right) would result in collision with itself or a wall, using a dictionary of where dangers are based on direction
 
-Initially, the agent only observed its head and the fruit. However, this led to poor learning: the agent frequently ran into its own body. However, we noticed that the agent wasn't taking into account its body, resulting in the snake agent constantly running into itself during training. On top of this, the snake also had no way of knowing if it was nearing a boundary or not. This is why our group decided to add an observation for both the rest of the snake body and whether or not the current action the agent took was a "dangerous" move that led it to a boundary or not.
+Initially, the agent only observed its head and the fruit. This led to poor learning and the agent frequently ran into its own body. We noticed that the agent wasn’t taking into account its body, resulting in the snake agent constantly running into itself during training, so we added an extra "danger" observation that would help the snake detect the board boundaries or parts of its tail based on the next move.
 
 ### Rewards and Episode Termination
 
