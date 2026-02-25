@@ -57,7 +57,7 @@ So far, we have only trained on the default hyperparamters of PPO, since most of
 | --------------------------- | ----- |
 | Learning rate               | 3e-4  |
 | Gamma (discount)            | 0.99  |
-| Clip range ((\epsilon))     | 0.2   |
+| Clip range                  | 0.2   |
 | GAE lambda                  | 0.95  |
 | Number of steps per update  | 2048  |
 | Number of epochs per update | 10    |
@@ -123,7 +123,12 @@ Final Timesteps:
 -----------------------------------------
 ```
 
-In terms of the reward mean, at the beginning training process point of 4096 timesteps, the snake agent was getting to either 0 or 1 apples, but the amount of steps it was taking was dropping the reward, resulting in a negative average reward of -1.17. In terms of timestep length, the snake was still training on what was a good or bad move, resulting in many runs in these initial timesteps where the snake ran into either itself or into the boundary walls, with an average timestep length of 22.5. At the end of the training process at 1 million timesteps, the average timestep length was 276, where the snake had already understood that running into itself or the boundary walls is not a good choice, as it lost lots of reward points throughout this training process. On top of this, the average reward in this point in the training process was 33.6, where the snake was getting on average around 30-40 apples each run, with the number of actions taken reducing this total reward. The snake at the end of the training process learned that the apples were the main source of increasing their reward, so the snake agent started to focus on getting to the apple instead of making the least amount of actions.
+In terms of the reward mean, at the beginning training process point of 4096 timesteps, the snake agent was getting to either 0 or 1 apples, but because taking additional steps incurs a penalty, it resulted in a negative average of -1.17. As for timestep length, since the snake was still training on what was a good or bad move, there were many runs where their initial timesteps had the snake run into either itself or into the boundary walls. This led to an average timestep length of 22.5. At the end of the training process at 1 million timesteps however, the average timestep length was 276, which indicates that the agent learned that running into itself or the boundary walls is not a good choice, as it was heavily penalized when dying. On top of this, the average reward in this point in the training process was 33.6, where the snake was getting on average around 30-40 apples each run, though the number of steps taken reduced this total reward. The snake at the end of the training process learned that the apples were the main source of increasing their reward, and so the snake agent started to focus on getting to the apple instead of making the least amount of actions.
+
+Moreover, we were able to generate the following plot to sumamrize the training process:
+<img width="4170" height="2966" alt="training_summary_2" src="https://github.com/user-attachments/assets/93d1f43f-11c0-459e-8e1a-5ea3850a7030" />
+
+Looking at this plot, we can observe a steady improvement in both the mean episode reward and mean episode length, with some fluctuations, indicating that the agent was steadily learning to survive longer and collect more apples over time. The entropy loss increased sharply at first and then oscillated around a roughly constant value, suggesting that the policy settled into consistent behavior early on and only maintained a small degree of exploration; this indicates that we could tune it to encourage further exploration later in training. The value loss oscillated much more strongly, indicating that the critic struggles to accurately estimate state values and could be improved for more stable learning. While this is concerning, we already plan to refine our reward system further, which should help address this instability.
 
 After deployment of our trained model, we evaluated the results by running 50 episodes on the final, trained model and came up with the following summary statistics:  
 
@@ -132,18 +137,22 @@ After deployment of our trained model, we evaluated the results by running 50 ep
 | Average Reward    | 51.25 |
 | Std Reward        | 28.55 |
 | Average Length    | 389.38 |
-| Average Score     | 20.42 |
+| Average Score (Apples)     | 20.42 |
 | Std Length        | 216.59 |
 | Max Reward        | 118.19 |
 | Min Reward        | -0.06 |
 
-The reward representing the total reward of the episode, the length showing the total timesteps taken in the episode, the score showing the number of apples collected in the episode, and the average reward per step taken all show how our snake was able to maneuver through the environment and successfully collect multiple apples for the most part while remaining alive by avoiding boundaries and running into itself. The total average of these results is shown:  
-
-![Summary of Evaluation Metrics](/images/summary_eval_metrics.jpg) 
-
 Using these results, we could see that the snake agent had successfully learned how to collect apples optimally by using the holes in its body. We were able to get an average score of around 20, where many of the runs had a score between 10 and 50. However, we still plan to improve these results by hypertuning the reward system. One specific section we plan to hypertune is how we reward points based on the distance between the snake's head and the apple, as currently, there is a set reward given based on if the snake moved closer or farther away. We plan to normalize this distance difference and make this added reward more variable for more accurate training results.
 
-For visual reference, below is one of our best training runs:
+In addition to these quantitative statistics, we also reviewed various clips throughout the training process to gain insight into what may have gone wrong. In specific, we observed (as mentioned in the above section) that the snake had a tendency to skill itself early on in the game because it had wrongfully learned that dying early on is more beneficial since it allowed for a less negative overall reward. We also observed that the snake may sometimes circulate around the fruit instead of eating it, since after eating it the snake would need to hunt for the next fruit and incurred a negative reward for every step it took away from the fruit. This led to adjustments such as the danger observation to prevent death. We also noticed that the agent took a lot of unecessary turns which increased the chance that it blocks itself into crashing into its own body, which is why we introduced a penalty for every action that moves the snake further from the fruit. 
+
+<img height="300" alt="image" src="https://github.com/user-attachments/assets/d251ff2f-b055-4220-b645-305fd3776365" />
+
+However, we also can observe from the qualitative videos positive attributes such as utilizing the gaps in between its body to escape from difficult positions or to get to the fruit through a slightly shorter path, which indicates that the agent is utilizing the cheese variation properites to aid its progress.
+
+<img height="300" alt="image" src="https://github.com/user-attachments/assets/b3e654bb-f246-4ea2-a8de-5f8e9ee5a23f" />
+
+Overall, our agent is steadily improving with the change we make. For visual reference, below is one of our best training runs:
 
 <figure>
 <video width="320" height="240" controls>
@@ -153,7 +162,7 @@ For visual reference, below is one of our best training runs:
     <figcaption>One of our training runs where the snake agent achieved 50 apples.</figcaption>
 </figure>
 
-This clip specifically shows how the snake agent efficiently cuts corners to get to the apple quickly. On top of this, it is shown that the snake has learned that it is able to go through the invisible body tiles of its body, where it learned this through the training process as there is no reward given nor taken for doing his. However, reward is taken for running into the visible parts of the body, which is most likely how the snake agent figured this unique mechanic out.
+This clip specifically shows how the snake agent efficiently cuts corners to get to the apple quickly. On top of this, it is shown that the snake has learned that it is able to go through the invisible body tiles of its body, where it learned this through the training process as there is no reward given nor taken for doing his. However, reward is taken for running into the visible parts of the body, which is most likely how the snake agent figured this unique mechanic.
 
 ## Remaining Goals and Challenges
 
