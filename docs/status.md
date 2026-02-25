@@ -35,10 +35,13 @@ For our reward system, our original reward system was:
 - **-1** if the game terminated (snake agent ran into a wall or itself)
 - **-0.01** for every action the snake took
 
+<figure>
 <video width="320" height="240" controls>
   <source src="./images/eval-episode-64.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
+    <figcaption>Example of a snake rushing towards the wall instead of the fruit in order to end the run.</figcaption>
+</figure>
 
 However, with this reward system, the snake agent never initially got to the apples, so it would always try to run into a wall to end its episode earlier, resulting in a less negative reward total than if they had continued exploring. This is why on top of these rewards, we added another reward mechanic, which was based on the Euclidean distance between the snake head and the fruit:
 - **+0.1** if the chosen action resulted in getting closer to the fruit
@@ -48,12 +51,81 @@ This additional approach helps the agent know that the fruit is the main goal of
 
 ## Evaluation
 
-After deployment of our trained model, we evaluated the results through an evaluation metric table:
-<iframe src="./images/eval_metrics.csv" width="100%" height="400"></iframe>
+After retrieving the results of our 1 million timestep training process, we noticed significant improvement between the first number of timesteps and the final number of timesteps:
 
-The reward representing the total reward of the episode, the length showing the total timesteps taken in the episode, the score showing the number of apples collected in the episode, and the average reward per step taken all show how our snake was able to maneuver through the environment and successfully collect multiple apples for the most part while remaining alive by avoiding boundaries and running into itself. The total average of these results is shown:
+First Timesteps:
+```
+-----------------------------------------
+| rollout/                |             |
+|    ep_len_mean          | 22.5        |
+|    ep_rew_mean          | -1.17       |
+| time/                   |             |
+|    fps                  | 56          |
+|    iterations           | 2           |
+|    time_elapsed         | 72          |
+|    total_timesteps      | 4096        |
+| train/                  |             |
+|    approx_kl            | 0.013247951 |
+|    clip_fraction        | 0.153       |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -1.38       |
+|    explained_variance   | -0.583      |
+|    learning_rate        | 0.0003      |
+|    loss                 | 0.0353      |
+|    n_updates            | 10          |
+|    policy_gradient_loss | -0.0196     |
+|    value_loss           | 0.238       |
+-----------------------------------------
+```
 
-<iframe src="./images/summary_eval_metrics.csv" width="100%" height="400"></iframe>
+Final Timesteps:
+```
+-----------------------------------------
+| rollout/                |             |
+|    ep_len_mean          | 276         |
+|    ep_rew_mean          | 33.6        |
+| time/                   |             |
+|    fps                  | 155         |
+|    iterations           | 489         |
+|    time_elapsed         | 6433        |
+|    total_timesteps      | 1001472     |
+| train/                  |             |
+|    approx_kl            | 0.015203483 |
+|    clip_fraction        | 0.109       |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -0.374      |
+|    explained_variance   | -0.146      |
+|    learning_rate        | 0.0003      |
+|    loss                 | 0.651       |
+|    n_updates            | 4880        |
+|    policy_gradient_loss | -0.0097     |
+|    value_loss           | 2.06        |
+-----------------------------------------
+```
+
+In terms of the reward mean, at the beginning training process point of 4096 timesteps, the snake agent was getting to either 0 or 1 apples, but the amount of steps it was taking was dropping the reward, resulting in a negative average reward of -1.17. In terms of timestep length, the snake was still training on what was a good or bad move, resulting in many runs in these initial timesteps where the snake ran into either itself or into the boundary walls, with an average timestep length of 22.5. At the end of the training process at 1 million timesteps, the average timestep length was 276, where the snake had already understood that running into itself or the boundary walls is not a good choice, as it lost lots of reward points throughout this training process. On top of this, the average reward in this point in the training process was 33.6, where the snake was getting on average around 30-40 apples each run, with the number of actions taken reducing this total reward. The snake at the end of the training process learned that the apples were the main source of increasing their reward, so the snake agent started to focus on getting to the apple instead of making the least amount of actions.
+
+After deployment of our trained model, we evaluated the results through an evaluation metric table:  
+
+![Evaluation Metrics](/images/eval_metrics.jpg) 
+
+The reward representing the total reward of the episode, the length showing the total timesteps taken in the episode, the score showing the number of apples collected in the episode, and the average reward per step taken all show how our snake was able to maneuver through the environment and successfully collect multiple apples for the most part while remaining alive by avoiding boundaries and running into itself. The total average of these results is shown:  
+
+![Summary of Evaluation Metrics](/images/summary_eval_metrics.jpg) 
+
+Using these results, we could see that the snake agent had successfully learned how to collect apples optimally by using the holes in its body. We were able to get an average score of around 20, where many of the runs had a score between 10 and 50. However, we still plan to improve these results by hypertuning the reward system. One specific section we plan to hypertune is how we reward points based on the distance between the snake's head and the apple, as currently, there is a set reward given based on if the snake moved closer or farther away. We plan to normalize this distance difference and make this added reward more variable for more accurate training results.
+
+For visual reference, below is one of our best training runs:
+
+<figure>
+<video width="320" height="240" controls>
+  <source src="./images/eval-episode-0.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+    <figcaption>One of our training runs where the snake agent achieved 50 apples.</figcaption>
+</figure>
+
+This clip specifically shows how the snake agent efficiently cuts corners to get to the apple quickly. On top of this, it is shown that the snake has learned that it is able to go through the invisible body tiles of its body, where it learned this through the training process as there is no reward given nor taken for doing his. However, reward is taken for running into the visible parts of the body, which is most likely how the snake agent figured this unique mechanic out.
 
 ## Remaining Goals and Challenges
 
