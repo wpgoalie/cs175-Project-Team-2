@@ -21,7 +21,7 @@ $$
 where L is given by:
 
 $$
-L\frac{\theta}{\theta}(s,a)=min(\rho\frac{\theta}{\theta}(a|s){A}_{\overline{\theta}}(s,a), {{A}_{\overline{\theta}}(s,a)}+{|\epsilon{A}_{\overline{\theta}}(s,a)|}
+L\frac{\theta}{\theta}(s,a)=min(\rho\frac{\theta}{\theta}(a|s)A_{\overline{\theta}}(s,a), {A_{\overline{\theta}}(s,a)}+{|\epsilon A_{\overline{\theta}}(s,a)|}
 $$
 
 ### Observations
