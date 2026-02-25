@@ -35,6 +35,11 @@ For our reward system, our original reward system was:
 - **-1** if the game terminated (snake agent ran into a wall or itself)
 - **-0.01** for every action the snake took
 
+<video width="320" height="240" controls>
+  <source src="../snake/snake-agent/eval-episode-64.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 However, with this reward system, the snake agent never initially got to the apples, so it would always try to run into a wall to end its episode earlier, resulting in a less negative reward total than if they had continued exploring. This is why on top of these rewards, we added another reward mechanic, which was based on the Euclidean distance between the snake head and the fruit:
 - **+0.1** if the chosen action resulted in getting closer to the fruit
 - **-0.1** if the chosen action resulted in getting farther from the fruit
