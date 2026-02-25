@@ -36,7 +36,7 @@ For our reward system, our original reward system was:
 - **-0.01** for every action the snake took
 
 <video width="320" height="240" controls>
-  <source src="../snake/snake-agent/eval-episode-64.mp4" type="video/mp4">
+  <source src="./images/eval-episode-64.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -48,7 +48,12 @@ This additional approach helps the agent know that the fruit is the main goal of
 
 ## Evaluation
 
+After deployment of our trained model, we evaluated the results through an evaluation metric table:
+<iframe src="./images/eval_metrics.csv" width="100%" height="400"></iframe>
 
+The reward representing the total reward of the episode, the length showing the total timesteps taken in the episode, the score showing the number of apples collected in the episode, and the average reward per step taken all show how our snake was able to maneuver through the environment and successfully collect multiple apples for the most part while remaining alive by avoiding boundaries and running into itself. The total average of these results is shown:
+
+<iframe src="./images/summary_eval_metrics.csv" width="100%" height="400"></iframe>
 
 ## Remaining Goals and Challenges
 
