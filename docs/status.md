@@ -14,18 +14,16 @@ This is a test message.
 
 In terms of our algorithmic approach, our group decided to go with using the Proximal Policy Optimization (PPO) algorithm in order to train our snake agent. This algorithm works well with discrete action spaces, where the dicrete action space for our project consists of: turning left, turning right, turning up, and turning down. We specifically use the clip version of the PPO algorihtm, where policies are updated using:
 
-```
 $$
 {\Epsilon}_{(s,a)∼p\overline{\theta}}[L\frac{\theta}{\theta}(s,a)]
 $$
-```
+
 where L is given by:
 
-```
 $$
 L\frac{\theta}{\theta}(s,a)=min(\rho\frac{\theta}{\theta}(a|s)\Alpha_{\overline{\theta}}(s,a), {\Alpha_{\overline{\theta}}(s,a)}+{|\epsilon\Alpha_{\overline{\theta}}(s,a)|}
 $$
-```
+
 ## Evaluation
 
 
