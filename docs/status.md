@@ -12,17 +12,34 @@ This is a test message.
 - basic reward system with a postiive and negative point system based on whether our snake find an apple versus hitting itself or the board boundary. 
 - provided more parameters, particularly a basic danger detection function, that will inform the agent where dangers of termination are in its next move, and more information about where the snake's body is on the board as opposed to having information on just eh snake's head and the fruit currently on the board.
 
-In terms of our algorithmic approach, our group decided to go with using the Proximal Policy Optimization (PPO) algorithm in order to train our snake agent. This algorithm works well with discrete action spaces, where the dicrete action space for our project consists of: turning left, turning right, turning up, and turning down. We specifically use the clip version of the PPO algorihtm, where policies are updated using:
+In terms of our algorithmic approach, our group decided to go with using the Proximal Policy Optimization (PPO) algorithm in order to train our snake agent. This algorithm works well with discrete action spaces, where the dicrete action space for our project consists of: turning left, turning right, turning up, and turning down. We intially started training with 25k-50k timesteps in order to test and see how our setup was doing. However, once we were content with our environment setup, we used 1 million timesteps for our latest training process. We specifically use the clip version of the PPO algorihtm, where policies are updated using:
 
 $$
-{\Epsilon}_{(s,a)∼p\overline{\theta}}[L\frac{\theta}{\theta}(s,a)]
+{E}_{(s,a)∼p\overline{\theta}}[L\frac{\theta}{\theta}(s,a)]
 $$
 
 where L is given by:
 
 $$
-L\frac{\theta}{\theta}(s,a)=min(\rho\frac{\theta}{\theta}(a|s)\Alpha_{\overline{\theta}}(s,a), {\Alpha_{\overline{\theta}}(s,a)}+{|\epsilon\Alpha_{\overline{\theta}}(s,a)|}
+L\frac{\theta}{\theta}(s,a)=min(\rho\frac{\theta}{\theta}(a|s){A}_{\overline{\theta}}(s,a), {{A}_{\overline{\theta}}(s,a)}+{|\epsilon{A}_{\overline{\theta}}(s,a)|}
 $$
+
+### Observations
+
+For our observation space, we originally had only the snake head and the fruit as an observation. However, we noticed that the agent wasn't taking into account its body, resulting in the snake agent constantly running into itself during training. On top of this, the snake also had no way of knowing if it was nearing a boundary or not. This is why our group decided to add an observation for both the rest of the snake body and whether or not the current action the agent took was a "dangerous" move that led it to a boundary or not.
+
+### Rewards
+
+For our reward system, our original reward system was:
+- **+1** if the score increased after the chosen action
+- **-1** if the game terminated (snake agent ran into a wall or itself)
+- **-0.01** for every action the snake took
+
+However, with this reward system, the snake agent never initially got to the apples, so it would always try to run into a wall to end its episode earlier, resulting in a less negative reward total than if they had continued exploring. This is why on top of these rewards, we added another reward mechanic, which was based on the Euclidean distance between the snake head and the fruit:
+- **+0.1** if the chosen action resulted in getting closer to the fruit
+- **-0.1** if the chosen action resulted in getting farther from the fruit
+
+This additional approach helps the agent know that the fruit is the main goal of the training process, resulting in the snake agent focusing its vision on the fruit rather than finding a fast way to stop its depletion of the reward in its current episode run.
 
 ## Evaluation
 
