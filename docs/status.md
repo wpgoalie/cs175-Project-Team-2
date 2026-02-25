@@ -12,6 +12,20 @@ This is a test message.
 - basic reward system with a postiive and negative point system based on whether our snake find an apple versus hitting itself or the board boundary. 
 - provided more parameters, particularly a basic danger detection function, that will inform the agent where dangers of termination are in its next move, and more information about where the snake's body is on the board as opposed to having information on just eh snake's head and the fruit currently on the board.
 
+In terms of our algorithmic approach, our group decided to go with using the Proximal Policy Optimization (PPO) algorithm in order to train our snake agent. This algorithm works well with discrete action spaces, where the dicrete action space for our project consists of: turning left, turning right, turning up, and turning down. We specifically use the clip version of the PPO algorihtm, where policies are updated using:
+
+```
+$$
+{\Epsilon}_{(s,a)∼p\overline{\theta}}[L\frac{\theta}{\theta}(s,a)]
+$$
+```
+where L is given by:
+
+```
+$$
+L\frac{\theta}{\theta}(s,a)=min(\rho\frac{\theta}{\theta}(a|s)\Alpha_{\overline{\theta}}(s,a), {\Alpha_{\overline{\theta}}(s,a)}+{|\epsilon\Alpha_{\overline{\theta}}(s,a)|}
+$$
+```
 ## Evaluation
 
 
