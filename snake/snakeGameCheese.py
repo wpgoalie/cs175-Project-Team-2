@@ -24,7 +24,8 @@ class snakeGameCheese():
                 pass
 
         # game state instead of quitting immediately
-        self.dead = False
+        self.wall_dead = False
+        self.body_dead = False
         # determine which body segment is visible
         self.active_body_key = 1
         # grow tail for two turns each fruit
@@ -178,7 +179,7 @@ class snakeGameCheese():
                     print("HIT WALL IN X-DIRECTION", file=f)
                 if self.DRAW: 
                     time.sleep(5)
-            self.dead = True
+            self.wall_dead = True
             return
         if self.snake_position[1] < 0 or self.snake_position[1] > self.size_y-self.cell_size:
             if self.DEBUG:
@@ -186,7 +187,7 @@ class snakeGameCheese():
                     print("HIT WALL IN Y-DIRECTION", file=f)
                 if self.DRAW: 
                    time.sleep(5)
-            self.dead = True
+            self.wall_dead = True
             return
     
         # Game Over Condition: touching snake body
@@ -198,7 +199,7 @@ class snakeGameCheese():
                         print("BODY KEY:", self.active_body_key, file=f)
                     if self.DRAW: 
                         time.sleep(5)
-                self.dead = True
+                self.body_dead = True
                 return
                 
         if self.DRAW:

@@ -178,7 +178,7 @@ class snakeRLEnvironment(gym.Env):
         try:
             x_calc = float(self.game.fruit_position[0]) - float(self.game.snake_position[0])
             y_calc = float(self.game.fruit_position[1]) - float(self.game.snake_position[1])
-            prev_distance = math.sqrt((x_calc) ** 2 + (y_calc) ** 2)
+            prev_distance = math.sqrt((x_calc) ** 2 + (y_calc) ** 2) # Euclidean Distance
         except ValueError:
             prev_distance = 0
         
@@ -189,7 +189,7 @@ class snakeRLEnvironment(gym.Env):
         self._target_location = self.game.fruit_position // self.game.cell_size
 
         # Check if agent reached the target or died
-        terminated = self.game.dead
+        terminated = self.game.wall_dead or self.game.body_dead # Game terminates if either snake runs into itself or a wall
 
         # We don't use truncation in this simple environment
         # (could add a step limit here if desired)
@@ -199,7 +199,7 @@ class snakeRLEnvironment(gym.Env):
         try:
             x_calc = float(self.game.fruit_position[0]) - float(self.game.snake_position[0])
             y_calc = float(self.game.fruit_position[1]) - float(self.game.snake_position[1])
-            current_distance = math.sqrt((x_calc) ** 2 + (y_calc) ** 2)
+            current_distance = math.sqrt((x_calc) ** 2 + (y_calc) ** 2) # Euclidean Distance
         except ValueError:
             current_distance = 0
 
@@ -208,17 +208,21 @@ class snakeRLEnvironment(gym.Env):
         # Simple reward structure: +1 for reaching target, 0 otherwise
         # Alternative: could give small negative rewards for each step to encourage efficiency (NOTE FOR FUTURE: negative reward if dies?)
         if self.game.score > prev_score:
-            reward = 1
+            reward = 2
         else: 
             if terminated:
-                reward = -1
+                if self.game.body_dead: # Snake died from running into its body
+                    reward = -1
+                else: # Snake dies from a wall; giving a larger penalty for wall deaths to prioritize avoiding walls earlier on
+                    reward = -1.5
+                    
             else:
                 distance_diff = prev_distance - current_distance
 
                 if distance_diff > 0:
-                    reward = reward + 0.1
+                    reward = reward + ((distance_diff / max(self.length_of_grid_x, self.length_of_grid_y))) / 2
                 else:
-                    reward = reward - 0.1
+                    reward = reward - ((distance_diff / max(self.length_of_grid_x, self.length_of_grid_y))) / 2
 
                 reward = reward - 0.01
 

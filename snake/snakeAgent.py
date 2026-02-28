@@ -22,12 +22,12 @@ def main():
     env = RecordEpisodeStatistics(env, buffer_length = 15000)
     
     model = PPO("MultiInputPolicy", env, verbose=1)
-    model.learn(total_timesteps=1_000_000)
+    model.learn(total_timesteps=100_000)
     model.save("ppo_snake")
     env.close()
 
-    avg_reward = np.sum(env.return_queue)
-    avg_length = np.sum(env.length_queue)
+    avg_reward = np.average(env.return_queue)
+    avg_length = np.average(env.length_queue)
 
     print(f'Average Reward: {avg_reward:.2f}')
     print(f'Average Episode Length: {avg_length:.1f}')
